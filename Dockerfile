@@ -38,6 +38,16 @@ RUN apt-get update && \
     useradd --create-home --shell /bin/bash node && \
     mkdir -p /home/node/.n8n /opt/n8n/community
 
+# Install real Google Chrome so Playwright can launch with channel:'chrome'.
+# Genuine Chrome TLS/HTTP2 fingerprint is needed to pass Cloudflare's stricter
+# challenge on Oscaro's dionysos XHR (bundled Chromium's fingerprint gets 403'd).
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends wget gnupg ca-certificates && \
+    wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y --no-install-recommends /tmp/chrome.deb && \
+    rm -f /tmp/chrome.deb && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /tmp
 
 COPY --from=builder /build/*.tgz /opt/n8n/community/n8n-nodes-playwright.tgz
