@@ -14,23 +14,9 @@ if command -v Xvfb >/dev/null 2>&1; then
   export DISPLAY=:99
 fi
 
-if [ ! -d "$N8N_NODES_DIR/node_modules/$PLAYWRIGHT_PACKAGE" ]; then
-  echo "Installing $PLAYWRIGHT_PACKAGE into $N8N_NODES_DIR"
-  npm install --prefix "$N8N_NODES_DIR" --omit=dev --ignore-scripts "$PLAYWRIGHT_TGZ"
-fi
-
-# Patch playwright-core to hide the CDP Runtime.enable leak that Cloudflare's jsd
-# bot-detection fingerprints (blocks the whole /xhr/ path otherwise). Runs once per volume.
-PW_CORE=$(find "$N8N_NODES_DIR/node_modules" -maxdepth 4 -type d -name playwright-core 2>/dev/null | head -1)
-if [ -n "${PW_CORE:-}" ] && [ ! -f "$PW_CORE/.rebrowser-patched" ]; then
-  PATCH_ROOT=$(dirname "$(dirname "$PW_CORE")")
-  echo "Patching playwright-core (rebrowser) in $PATCH_ROOT"
-  if (cd "$PATCH_ROOT" && npx --yes rebrowser-patches@latest patch --packageName playwright-core); then
-    touch "$PW_CORE/.rebrowser-patched"
-    echo "rebrowser patch applied"
-  else
-    echo "rebrowser patch failed (continuing without it)"
-  fi
-fi
+# Always (re)install the bundled node package so source/dependency changes (e.g. patchright)
+# actually deploy — the node lives in the persisted volume, so a stale copy would linger otherwise.
+echo "Installing/updating $PLAYWRIGHT_PACKAGE into $N8N_NODES_DIR"
+npm install --prefix "$N8N_NODES_DIR" --omit=dev --ignore-scripts "$PLAYWRIGHT_TGZ" || echo "node install failed (continuing)"
 
 exec "$@"
