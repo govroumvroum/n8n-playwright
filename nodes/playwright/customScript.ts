@@ -22,7 +22,8 @@ export async function runCustomScript(
     itemIndex: number,
     browser: any,
     page: any,
-    playwright: any
+    playwright: any,
+    patchright?: any
 ): Promise<INodeExecutionData[]> {
     const scriptCode = executeFunctions.getNodeParameter('scriptCode', itemIndex) as string;
 
@@ -39,6 +40,7 @@ export async function runCustomScript(
         $browser: browser,
         $page: page,
         $playwright: playwright,
+        $patchright: patchright ?? playwright,
         $helpers: executeFunctions.helpers,
     };
 

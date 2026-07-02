@@ -322,6 +322,9 @@ return [{
 
             try {
                 const playwright = require('playwright');
+                // patchright = undetected drop-in (patched CDP) for custom scripts to launch channel:'chrome'
+                let patchright: any;
+                try { patchright = require('patchright'); } catch (e) { patchright = playwright; }
                 const browsersPath = join(__dirname, '..', 'browsers');
 
                 // Get browser executable path
@@ -350,7 +353,7 @@ return [{
                 if (operation === 'runCustomScript') {
                     // Custom script doesn't need URL navigation beforehand
                     console.log(`Processing ${i + 1} of ${items.length}: [runCustomScript] Custom Script`);
-                    result = await runCustomScript(this, i, browser, page, playwright);
+                    result = await runCustomScript(this, i, browser, page, playwright, patchright);
                     await browser.close();
                     returnData.push(...result);
                 } else {

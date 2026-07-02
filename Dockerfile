@@ -10,7 +10,7 @@ RUN corepack enable && \
 COPY package.json pnpm-lock.yaml tsconfig.json gulpfile.js index.js ./
 COPY nodes ./nodes
 
-RUN pnpm install --frozen-lockfile --ignore-scripts && \
+RUN pnpm install --no-frozen-lockfile --ignore-scripts && \
     pnpm build && \
     pnpm run setup && \
     npm pack

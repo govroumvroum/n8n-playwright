@@ -64,6 +64,7 @@
   "dependencies": {
     "@n8n/vm2": "^3.9.25",
     "fs-extra": "^11.2.0",
+    "patchright": "1.61.1",
     "playwright": "1.49.0"
   }
 }
