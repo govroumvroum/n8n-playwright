@@ -23,6 +23,7 @@ ENV NODE_ENV=production \
     N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true \
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     N8N_RELEASE_TYPE=stable \
+    REBROWSER_PATCHES_RUNTIME_FIX_MODE=addBinding \
     NODE_PATH=/usr/local/lib/node_modules/n8n/node_modules
 
 USER root
